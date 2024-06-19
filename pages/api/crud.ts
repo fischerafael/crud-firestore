@@ -1,4 +1,5 @@
 import { crud } from "@/server/crud";
+import { middleWares } from "@/server/middlewares";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -7,6 +8,7 @@ export default async function handler(
 ) {
   const { method, headers, query, body } = req;
   try {
+    await middleWares.validate(req);
     if (method === "POST") {
       const response = await crud.create(
         headers.app as string,
