@@ -37,7 +37,7 @@ export const crud = {
     const docRef = doc(db, collectionName, id);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) throw new Error("Document does not exist");
-    return docSnap.data();
+    return { ...docSnap.data(), id: docSnap.id };
   },
 
   async updateById(id: string, data: any) {
@@ -80,7 +80,7 @@ export const crud = {
     let res: any[] = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      res.push(doc.data());
+      res.push({ ...doc.data(), id: doc.id });
     });
 
     return { queryDictArray, response: res };
