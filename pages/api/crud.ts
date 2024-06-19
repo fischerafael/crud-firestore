@@ -12,33 +12,39 @@ export default async function handler(
     await middleWares.verifyAPIKey(req);
     if (method === "POST") {
       const response = await crud.create(
-        headers.app as string,
         headers.user as string,
-        body
+        body,
+        headers.app as string
       );
       return res.status(201).json({ message: "Ok", data: response });
     }
 
     if (method === "DELETE") {
-      const response = await crud.delete(query.id as string);
+      const response = await crud.delete(
+        query.id as string,
+        headers.app as string
+      );
       return res.status(200).json({ message: "Ok", data: response });
     }
 
     if (method === "PATCH") {
-      await crud.updateById(query.id as string, body);
+      await crud.updateById(query.id as string, body, headers.app as string);
       return res.status(200).json({ message: "Ok" });
     }
 
     if (method === "GET") {
       if (headers.action === "FIND_BY_ID") {
-        const response = await crud.findById(query.id as string);
+        const response = await crud.findById(
+          query.id as string,
+          headers.app as string
+        );
         return res.status(200).json({ message: "Ok", data: response });
       }
       if (headers.action === "LIST") {
         const response = await crud.list(
           headers.user as string,
-          headers.app as string,
-          query
+          query,
+          headers.app as string
         );
         return res.status(200).json({ message: "Ok", data: response });
       }

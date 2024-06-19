@@ -18,7 +18,7 @@ import { db } from "./firestore";
 const collectionName = "crud";
 
 export const crud = {
-  async create(app: string, user: string, data: any) {
+  async create(user: string, data: any, app: string) {
     const payload = {
       createdAt: Timestamp.fromDate(new Date()),
       app,
@@ -29,18 +29,21 @@ export const crud = {
     return docRef.id;
   },
 
-  async delete(id: string) {
+  async delete(id: string, app: string) {
+    if (!app) throw new Error("No App");
     await deleteDoc(doc(db, collectionName, id));
   },
 
-  async findById(id: string) {
+  async findById(id: string, app: string) {
+    if (!app) throw new Error("No App");
     const docRef = doc(db, collectionName, id);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) throw new Error("Document does not exist");
     return { ...docSnap.data(), id: docSnap.id };
   },
 
-  async updateById(id: string, data: any) {
+  async updateById(id: string, data: any, app: string) {
+    if (!app) throw new Error("No App");
     const docRef = doc(db, collectionName, id);
     const docSnap = await getDoc(docRef);
     await updateDoc(docRef, {
@@ -48,8 +51,9 @@ export const crud = {
     });
   },
 
-  async list(user: string, app: string, queryDict: any) {
-    if (!user || !app) throw new Error("No user or app provided");
+  async list(user: string, queryDict: any, app: string) {
+    if (!app) throw new Error("No App");
+    if (!user) throw new Error("No user provided");
 
     const queryDictArray = Object.entries(queryDict).map(([key, value]) => {
       const [keyValue, keySeparator, type] = key.split(" ");
