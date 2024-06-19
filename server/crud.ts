@@ -87,6 +87,6 @@ export const crud = {
       res.push({ ...doc.data(), id: doc.id });
     });
 
-    return { queryDictArray, response: res };
+    return { response: res, count: res.length, query: queryDictArray };
   },
 };
