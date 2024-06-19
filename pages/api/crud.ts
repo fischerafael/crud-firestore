@@ -11,10 +11,7 @@ export default async function handler(
       const response = await crud.create(
         headers.app as string,
         headers.user as string,
-        {
-          company: body.company,
-          score: body.score,
-        }
+        body
       );
       return res.status(201).json({ message: "Ok", data: response });
     }
@@ -22,6 +19,11 @@ export default async function handler(
     if (method === "DELETE") {
       const response = await crud.delete(query.id as string);
       return res.status(200).json({ message: "Ok", data: response });
+    }
+
+    if (method === "PATCH") {
+      await crud.updateById(query.id as string, body);
+      return res.status(200).json({ message: "Ok" });
     }
 
     if (method === "GET") {

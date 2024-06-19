@@ -40,6 +40,14 @@ export const crud = {
     return docSnap.data();
   },
 
+  async updateById(id: string, data: any) {
+    const docRef = doc(db, collectionName, id);
+    const docSnap = await getDoc(docRef);
+    await updateDoc(docRef, {
+      data: { ...docSnap.data()?.data, ...data },
+    });
+  },
+
   async list(user: string, app: string, queryDict: any) {
     if (!user || !app) throw new Error("No user or app provided");
 
@@ -72,7 +80,6 @@ export const crud = {
     let res: any[] = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
       res.push(doc.data());
     });
 
