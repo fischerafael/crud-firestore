@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firestore";
 
-const collectionName = "crud";
+// const app = "crud";
 
 export const crud = {
   async create(user: string, data: any, app: string) {
@@ -25,18 +25,18 @@ export const crud = {
       user,
       data: data,
     };
-    const docRef = await addDoc(collection(db, collectionName), payload);
+    const docRef = await addDoc(collection(db, app), payload);
     return docRef.id;
   },
 
   async delete(id: string, app: string) {
     if (!app) throw new Error("No App");
-    await deleteDoc(doc(db, collectionName, id));
+    await deleteDoc(doc(db, app, id));
   },
 
   async findById(id: string, app: string) {
     if (!app) throw new Error("No App");
-    const docRef = doc(db, collectionName, id);
+    const docRef = doc(db, app, id);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) throw new Error("Document does not exist");
     return { ...docSnap.data(), id: docSnap.id };
@@ -44,7 +44,7 @@ export const crud = {
 
   async updateById(id: string, data: any, app: string) {
     if (!app) throw new Error("No App");
-    const docRef = doc(db, collectionName, id);
+    const docRef = doc(db, app, id);
     const docSnap = await getDoc(docRef);
     await updateDoc(docRef, {
       data: { ...docSnap.data()?.data, ...data },
@@ -80,7 +80,7 @@ export const crud = {
     );
     const wheres = [...basic, ...advanced];
 
-    const q = query(collection(db, collectionName), ...wheres);
+    const q = query(collection(db, app), ...wheres);
     let res: any[] = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
