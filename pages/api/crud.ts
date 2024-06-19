@@ -8,7 +8,8 @@ export default async function handler(
 ) {
   const { method, headers, query, body } = req;
   try {
-    await middleWares.validate(req);
+    await middleWares.corsMiddleware(req, res);
+    await middleWares.verifyAPIKey(req);
     if (method === "POST") {
       const response = await crud.create(
         headers.app as string,

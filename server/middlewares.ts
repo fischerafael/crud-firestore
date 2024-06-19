@@ -1,4 +1,4 @@
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 const API_KEY = process.env.APP_API_KEY;
 
 const verifyAPIKey = async (req: NextApiRequest) => {
@@ -7,8 +7,22 @@ const verifyAPIKey = async (req: NextApiRequest) => {
   if (apiKey !== API_KEY) throw new Error("Invalid API Key");
 };
 
-const validate = async (req: NextApiRequest) => {
-  await verifyAPIKey(req);
+import Cors from "cors";
+
+const cors = Cors({
+  methods: ["POST", "PATCH", "PUT", "DELETE", "GET"],
+});
+
+const corsMiddleware = (req: NextApiRequest, res: NextApiResponse) => {
+  return new Promise((resolve, reject) => {
+    cors(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+
+      return resolve(result);
+    });
+  });
 };
 
-export const middleWares = { validate };
+export const middleWares = { verifyAPIKey, corsMiddleware: corsMiddleware };
