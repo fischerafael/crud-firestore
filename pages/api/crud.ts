@@ -49,7 +49,6 @@ export default async function handler(
         return res.status(200).json({ message: "Ok", data: response });
       }
     }
-
     return res.status(405).json({ message: "Not Implemented" });
   } catch (e: any) {
     console.log("[error]", e);
